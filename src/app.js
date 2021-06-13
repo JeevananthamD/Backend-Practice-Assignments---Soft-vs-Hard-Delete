@@ -36,8 +36,8 @@ app.post('/students', async (req, res) =>{
 // Get specific student
 app.get('/students/:id', async (req, res) =>{
     // write your codes here
-    const student = await Student.find({_id:req.params.id},{isDeleted:false});
-    if(!student) return res.sendStatus(404);
+    const student = await Student.findById(req.params.id);
+    if(student.$isDeleted) return res.sendStatus(404);
     res.send(student);
 })
 
@@ -47,13 +47,13 @@ app.delete('/students/:id', async (req, res) =>{
     console.log(req.query.type); 
     if(req.query.type === "soft") {
         const student = await Student.findById(req.params.id);
-        if(!student.$isDeleted) return res.sendStatus(404);
+        if(student.$isDeleted) return res.sendStatus(404);
         student.$isDeleted = true;
         await student.save();
         res.sendStatus(200);
     }
     if(req.query.type === "hard") {
-        const student = await Student.deleteOne({_id:req.params.id});
+        const student = await Student.findByIdAndDelete(req.params.id);
         await student.save();
         res.sendStatus(200);
     }
