@@ -53,8 +53,9 @@ app.delete('/students/:id', async (req, res) =>{
         res.sendStatus(200);
     }
     if(req.query.type === "hard") {
-        const student = await Student.findByIdAndRemove(req.params.id);
+        const student = await Student.findByIdAndDelete(req.params.id);
         // await student.save();
+        done();
         res.sendStatus(200);
     }
 }) 
